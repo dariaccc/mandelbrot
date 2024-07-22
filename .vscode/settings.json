@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "cmath": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp"
+    }
+}

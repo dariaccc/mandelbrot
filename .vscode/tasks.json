@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-g",
+                "main.cpp",
+                "-o",
+                "main",
+                "-std=c++20",   // Enable C++20
+                "-I/usr/local/include/SDL2",
+                "-D_REENTRANT",
+                "-L/usr/local/lib",
+                "-lSDL2"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "Generated task by debugging."
+        }
+    ]
+}
