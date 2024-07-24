@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h> //SDL2 library for graphics rendering
 #include <numeric> //library for numeric operations
 #include <complex> //library for complex numbers
+#include <chrono> //library for time stamps
 
 //function to determine if a complex number is in the Mandelbrot set
 int mset(std::complex<double> c, int max_it) {
@@ -84,7 +85,15 @@ int main() {
         
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //set background color to black
         SDL_RenderClear(renderer); //clear the renderer
+        
+        auto start = std::chrono::high_resolution_clock::now(); //start the timer
         renderMandelbrot(renderer, windowsize, scale, offsetX, offsetY, max_it); //render the Mandelbrot set
+        auto end = std::chrono::high_resolution_clock::now(); //end the timer
+
+        std::chrono::duration<double> time = end - start; //calculate the elapsed time
+        std::cout << "Rendering time: " << time.count() << " seconds" << std::endl; //output the elapsed time to the terminal
+
+        
         SDL_RenderPresent(renderer); //present the rendered image
     }
     
