@@ -60,7 +60,7 @@ int main() {
     double scale = 3.0 / windowsize; //define the initial scale for the mandelbrot compared to window size
     double offsetX = -0.5; //initial x offset, -0,5 so the picture is slightly to the left
     double offsetY = 0.0; //initial y offset
-    int max_it = 100; //define maximum number of iterations
+    int max_it = 200; //define maximum number of iterations
     
     SDL_Event e; //create an SDL event
     bool quit = false; //to quit the application
@@ -78,14 +78,14 @@ int main() {
 
         if (!stopZoom) { //if zooming is not stopped
             scale *= 0.8; //zoom in
-            max_it = static_cast<int>(max_it * 1.05); //increase the maximum number of iterations when zooming for detail
+            
             offsetX = -0.743643887037151; //update the x offset, choose the point where to zoom in
             offsetY = 0.131825904205330; //same for y
         }
         
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //set background color to black
         SDL_RenderClear(renderer); //clear the renderer
-        
+
         auto start = std::chrono::high_resolution_clock::now(); //start the timer
         renderMandelbrot(renderer, windowsize, scale, offsetX, offsetY, max_it); //render the Mandelbrot set
         auto end = std::chrono::high_resolution_clock::now(); //end the timer
@@ -93,6 +93,12 @@ int main() {
         std::chrono::duration<double> time = end - start; //calculate the elapsed time
         std::cout << "Rendering time: " << time.count() << " seconds" << std::endl; //output the elapsed time to the terminal
 
+        if (time.count() > 1.5) { //if rendering takes longer than 0.1 seconds
+            max_it = static_cast<int>(max_it * 0.95); //decrease max_it
+        } else {
+            max_it = static_cast<int>(max_it * 1.02); //slightly increase max_it
+        } //increase the maximum number of iterations when zooming for detail, but make sure it doesn't slow down the program too much
+            
         
         SDL_RenderPresent(renderer); //present the rendered image
     }
