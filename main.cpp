@@ -73,6 +73,7 @@ int main() {
             }
             if (e.type == SDL_MOUSEBUTTONDOWN) { //if the mouse is pressed
                 stopZoom = true; //stop zooming
+                std::cout << "Zoom stopped." << std::endl;
             }
         }
 
@@ -81,26 +82,28 @@ int main() {
             
             offsetX = -0.743643887037151; //update the x offset, choose the point where to zoom in
             offsetY = 0.131825904205330; //same for y
+
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //set background color to black
+            SDL_RenderClear(renderer); //clear the renderer
+
+            auto start = std::chrono::high_resolution_clock::now(); //start the timer
+            renderMandelbrot(renderer, windowsize, scale, offsetX, offsetY, max_it); //render the Mandelbrot set
+            auto end = std::chrono::high_resolution_clock::now(); //end the timer
+
+            std::chrono::duration<double> time = end - start; //calculate the elapsed time
+            std::cout << "Rendering time: " << time.count() << " seconds" << std::endl; //output the elapsed time to the terminal
+
+            if (time.count() > 1.5) { //if rendering takes longer than 0.1 seconds
+                max_it = static_cast<int>(max_it * 0.95); //decrease max_it
+            } else {
+                max_it = static_cast<int>(max_it * 1.02); //slightly increase max_it
+            } //increase the maximum number of iterations when zooming for detail, but make sure it doesn't slow down the program too much
+                
+            
+            SDL_RenderPresent(renderer); //present the rendered image
         }
         
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //set background color to black
-        SDL_RenderClear(renderer); //clear the renderer
-
-        auto start = std::chrono::high_resolution_clock::now(); //start the timer
-        renderMandelbrot(renderer, windowsize, scale, offsetX, offsetY, max_it); //render the Mandelbrot set
-        auto end = std::chrono::high_resolution_clock::now(); //end the timer
-
-        std::chrono::duration<double> time = end - start; //calculate the elapsed time
-        std::cout << "Rendering time: " << time.count() << " seconds" << std::endl; //output the elapsed time to the terminal
-
-        if (time.count() > 1.5) { //if rendering takes longer than 0.1 seconds
-            max_it = static_cast<int>(max_it * 0.95); //decrease max_it
-        } else {
-            max_it = static_cast<int>(max_it * 1.02); //slightly increase max_it
-        } //increase the maximum number of iterations when zooming for detail, but make sure it doesn't slow down the program too much
-            
         
-        SDL_RenderPresent(renderer); //present the rendered image
     }
     
     //when !quit isn't true:
